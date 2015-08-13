@@ -1,55 +1,61 @@
-" plugin
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugin
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 filetype off
-set rtp+=$VIMRUNTIME/bundle/vundle/
+set rtp+=$VIM/bundle/vundle/
 call vundle#rc()
 call vundle#begin('$VIM/bundle/')
 Bundle 'gmarik/vundle'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'PaperColor.vim'
 Bundle 'mru.vim'
 Bundle 'ctags.vim'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
-Bundle 'tpope/vim-fugitive'
-Bundle 'Lokaltog/vim-easymotion'
 Bundle 'The-Nerd-Tree'
+Bundle 'The-Nerd-Commenter'
 Bundle 'winmanager'
 Bundle 'tagbar'
 Bundle 'a.vim'
 Bundle 'c.vim'
-Bundle 'Shougo/neocomplete.vim'
-Bundle 'Lokaltog/vim-powerline'
+Bundle 'xml.vim'
+Bundle 'css.vim'
+Bundle 'python.vim'
+Bundle 'javascript.vim'
+Bundle 'fencview.vim'
+Bundle 'AutoClose'
+Bundle 'MatchIt.zip'
 Bundle 'STL-Syntax'
 Bundle 'TagHighlight'
+Bundle 'tpope/vim-fugitive'
+Bundle 'Shougo/neocomplete.vim'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'Lokaltog/vim-powerline'
 Bundle 'octol/vim-cpp-enhanced-highlight'
 Bundle 'hdima/python-syntax'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'kien/ctrlp.vim'
 Bundle 'msanders/snipmate.vim'
+Bundle 'tpope/vim-surround'
+Bundle 'scrooloose/syntastic'
+Bundle 'sirver/ultisnips'
+Bundle 'altercation/vim-colors-solarized'
+"Bundle 'Valloric/YouCompleteMe'
 call vundle#end()
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => others 
+" => Plugin config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-filetype plugin indent on
-"set guifont=11DejaVu_Sans_Mono:h10:cANSI
-"set guifont=Consolas:h10
-"set guifontwide=Microsoft/ YaHei:h12
-"set guifont=Bitstream_Vera_Sans_Mono:h10:cANSI
-"set guifont=Microsoft_YaHei_Mono:h10:cANSI
-
-set helplang=cn
+" winmanager
 "let g:winManagerWindowLayout='NERDTree'
 let g:winManagerWidth=30
 nmap wm :WMToggle<cr>
+
+" NERDTree
 nn <silent><F7> :exec("NERDTree ".expand('%:h'))<CR>
 autocmd VimEnter * NERDTree
 nn <silent><F2> :UpdateTypesFile<CR>
-
-"NERD Tree
 let NERDChristmasTree=1
 let NERDTreeAutoCenter=1
 let NERDTreeBookmarksFile=$VIM.'/Data/NerdBookmarks.txt'
@@ -61,50 +67,19 @@ let NERDTreeShowLineNumbers=0
 let NERDTreeWinSize=31
 let NERDTreeTitle='[NERD Tree]'
 let NERDTreeMinimalUI=1
+let NERDTreeDirArrows=1
 
-if has('win32')
-    au GUIEnter * simalt ~x
-else
-    au GUIEnter * call MaximizeWindow()
-endif
- 
-function! MaximizeWindow()
-    silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
-endfunction
+" powerline
+let g:Powerline_mode_V = 'VISUAL LINE'
+let g:Powerline_mode_cv = 'VISUAL BLOCK'
+let g:Powerline_mode_S = 'SELECT LINE'
+let g:Powerline_mode_cs = 'SELECT BLOCK'
 
-nnoremap <silent> <F12> :A<CR>
-let OmniCpp_NamespaceSearch = 1
-let OmniCpp_GlobalScopeSearch = 1
-let OmniCpp_ShowAccess = 1 
-let OmniCpp_ShowPrototypeInAbbr = 1 " 显示函数参数列表 
-let OmniCpp_MayCompleteDot = 1   " 输入 .  后自动补全
-let OmniCpp_MayCompleteArrow = 1 " 输入 -> 后自动补全 
-let OmniCpp_MayCompleteScope = 1 " 输入 :: 后自动补全 
-let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
-" 自动关闭补全窗口 
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif 
-set completeopt=menuone,menu,longest
-highlight Pmenu    guibg=darkgrey  guifg=black 
-highlight PmenuSel guibg=lightgrey guifg=black
-set clipboard+=unnamed
-"nmap <F2> :nohlsearch<CR>
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => pclint 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"comp! flint
-"nnoremap <silent> <F11> :make<CR>:botright cope<cr>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => plugin 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" tagbar
 nnoremap <silent> <F8> :TagbarToggle<CR> 
 let g:tagbar_right = 1
 let g:tagbar_width = 30
 autocmd VimEnter * nested :call tagbar#autoopen(1)  
-
-nmap ,s :source $VIM/_vimrc<CR> 
-nmap ,v e $VIM/_vimrc<CR>
-set shortmess=atI
 
 "neocomplete
 " Disable AutoComplPop.
@@ -116,13 +91,12 @@ let g:neocomplete#enable_smart_case = 1
 " Set minimum syntax keyword length.
 let g:neocomplete#sources#syntax#min_keyword_length = 3
 let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
 " Define dictionary.
 let g:neocomplete#sources#dictionary#dictionaries = {
     \ 'default' : '',
     \ 'vimshell' : $HOME.'/.vimshell_hist',
     \ 'scheme' : $HOME.'/.gosh_completions'
-        \ }
+    \ }
 
 " Define keyword.
 if !exists('g:neocomplete#keyword_patterns')
@@ -192,6 +166,45 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 let g:cpp_class_scope_highlight = 1
 let g:cpp_experimental_template_highlight = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => others 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+filetype plugin indent on
+"set guifont=11DejaVu_Sans_Mono:h10:cANSI
+
+set helplang=cn
+
+if has('win32')
+    au GUIEnter * simalt ~x
+else
+    au GUIEnter * call MaximizeWindow()
+endif
+ 
+function! MaximizeWindow()
+    silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
+endfunction
+
+nnoremap <silent> <F12> :A<CR>
+" 鑷姩鍏抽棴琛ュ叏绐楀彛 
+au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif 
+set completeopt=menuone,menu,longest
+highlight Pmenu    guibg=darkgrey  guifg=black 
+highlight PmenuSel guibg=lightgrey guifg=black
+set clipboard+=unnamed
+"nmap <F2> :nohlsearch<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => pclint 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"comp! flint
+"nnoremap <silent> <F11> :make<CR>:botright cope<cr>
+
+
+nmap ,s :source $VIM/_vimrc<CR><ESC><ESC>  
+nmap ,v e $VIM/_vimrc<CR>
+set shortmess=atI
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Maintainer: 
@@ -351,11 +364,11 @@ if has("gui_running")
 endif
 
 " Set utf8 as standard encoding and en_US as the standard language
-""""""""""""set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
-""""""""""""set termencoding=utf-8
-""""""""""""set encoding=utf-8
-""""""""""""set fileencodings=ucs-bom,utf-8,cp936
-""""""""""""set fileencoding=utf-8
+set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
+set termencoding=utf-8
+set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,cp936
+set fileencoding=utf-8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
@@ -421,10 +434,16 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
-" buffer finder
-map <leader>b :FufBuffer<cr>
-map <leader>f :FufFile<cr>
-map <leader>t :FufTag<cr>
+" FuzzyFinder
+map <leader>fb :FufBuffer<cr>
+map <leader>fc :FufChangeList<cr>
+map <leader>fd :FufDir<cr>
+map <leader>ff :FufFile<cr>
+map <leader>fh :FufHelp<cr>
+map <leader>fj :FufJumpList<cr>
+map <leader>fl :FufLine<cr>
+map <leader>ft :FufTag<cr>
+map <leader>fq :FufQuickfix<cr>
 
 " Close the current buffer
 map <leader>bd :Bclose<cr>
@@ -479,7 +498,7 @@ set statusline+=\|%-4{&ff}
 set statusline+=\|%-4(%p%%%) 
 set statusline+=\|%-23(row:%l/%L,col:%c%) 
 
-set titlestring=GVIM\ -\ [%r%{getcwd()}%h]
+set titlestring=VIM\ -\ [%r%{getcwd()}%h]
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
@@ -537,10 +556,10 @@ vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
 " To go to the previous search results do:
 "   <leader>p
 "
-map <leader>cc :botright cope<cr>
-map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-map <leader>n :cn<cr>
-map <leader>p :cp<cr>
+"map <leader>cc :botright cope<cr>
+"map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
+"map <leader>n :cn<cr>
+"map <leader>p :cp<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
