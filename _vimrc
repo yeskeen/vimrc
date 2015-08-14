@@ -1,11 +1,27 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Plugin
+" => OS Settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has('win32') && has('gui_win32') && has('gui_running')
+   let s:RUNTIME_DIR=$VIM
+   au GUIEnter * simalt ~x
+else
+   let s:RUNTIME_DIR=~/.vim
+   au GUIEnter * call MaximizeWindow()
+endif
+ 
+function! MaximizeWindow()
+    silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
+endfunction
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 filetype off
-set rtp+=$VIM/bundle/vundle/
+exec "set rtp+=".s:RUNTIME_DIR.'\bundle\vundle'
 call vundle#rc()
-call vundle#begin('$VIM/bundle/')
+call vundle#begin(s:RUNTIME_DIR.'\bundle\')
 Bundle 'gmarik/vundle'
 Bundle 'mru.vim'
 Bundle 'ctags.vim'
@@ -13,7 +29,6 @@ Bundle 'L9'
 Bundle 'FuzzyFinder'
 Bundle 'The-Nerd-Tree'
 Bundle 'The-Nerd-Commenter'
-Bundle 'winmanager'
 Bundle 'tagbar'
 Bundle 'a.vim'
 Bundle 'c.vim'
@@ -27,7 +42,7 @@ Bundle 'MatchIt.zip'
 Bundle 'STL-Syntax'
 Bundle 'TagHighlight'
 Bundle 'tpope/vim-fugitive'
-Bundle 'Shougo/neocomplete.vim'
+"Bundle 'Shougo/neocomplete.vim'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'octol/vim-cpp-enhanced-highlight'
@@ -35,27 +50,26 @@ Bundle 'hdima/python-syntax'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'kien/ctrlp.vim'
-Bundle 'msanders/snipmate.vim'
+"Bundle 'msanders/snipmate.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'scrooloose/syntastic'
 Bundle 'sirver/ultisnips'
 Bundle 'altercation/vim-colors-solarized'
-"Bundle 'Valloric/YouCompleteMe'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'qiyu2580/vimcdoc'
 call vundle#end()
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugin config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" winmanager
-"let g:winManagerWindowLayout='NERDTree'
-let g:winManagerWidth=30
-nmap wm :WMToggle<cr>
+" c.vim
+let g:C_GlobalTemplateFile= s:RUNTIME_DIR.'/bundle/c.vim/c-support/templates/Templates'
 
 " NERDTree
-nn <silent><F7> :exec("NERDTree ".expand('%:h'))<CR>
+nn <silent><F6> :exec("NERDTree ".expand('%:h'))<CR>
+nn <silent><F7> :NERDTreeToggle<cr>
 autocmd VimEnter * NERDTree
-nn <silent><F2> :UpdateTypesFile<CR>
 let NERDChristmasTree=1
 let NERDTreeAutoCenter=1
 let NERDTreeBookmarksFile=$VIM.'/Data/NerdBookmarks.txt'
@@ -69,103 +83,116 @@ let NERDTreeTitle='[NERD Tree]'
 let NERDTreeMinimalUI=1
 let NERDTreeDirArrows=1
 
-" powerline
+" syntastics
+nn <silent><F2> :UpdateTypesFile<CR>
+
+" PowerLine
 let g:Powerline_mode_V = 'VISUAL LINE'
 let g:Powerline_mode_cv = 'VISUAL BLOCK'
 let g:Powerline_mode_S = 'SELECT LINE'
 let g:Powerline_mode_cs = 'SELECT BLOCK'
 
-" tagbar
+" TagBar
 nnoremap <silent> <F8> :TagbarToggle<CR> 
 let g:tagbar_right = 1
 let g:tagbar_width = 30
 autocmd VimEnter * nested :call tagbar#autoopen(1)  
 
-"neocomplete
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 3
-let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-" Define dictionary.
-let g:neocomplete#sources#dictionary#dictionaries = {
-    \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell_hist',
-    \ 'scheme' : $HOME.'/.gosh_completions'
-    \ }
+" YouCompleteMe 
+let g:ycm_global_ycm_extra_conf = $VIM.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
+let g:ycm_complete_in_comments=1
+let g:ycm_confirm_extra_conf=0
+let g:ycm_collect_identifiers_from_tags_files=1
+set tags+=/data/misc/software/misc./vim/stdcpp.tags
+inoremap <leader>; <C-x><C-o>
+set completeopt-=preview
+let g:ycm_min_num_of_chars_for_completion=1
+let g:ycm_cache_omnifunc=0
+let g:ycm_seed_identifiers_with_syntax=1
+let g:ycm_key_invoke_completion = '<M-;>'
+nmap <M-g> :YcmCompleter GoToDefinitionElseDeclaration <C-R>=expand("<cword>")<CR><CR>
 
-" Define keyword.
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+""neocomplete
+"let g:acp_enableAtStartup = 0
+"let g:neocomplete#enable_at_startup = 1
+"let g:neocomplete#enable_smart_case = 1
+"let g:neocomplete#sources#syntax#min_keyword_length = 3
+"let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+"" Define dictionary.
+"let g:neocomplete#sources#dictionary#dictionaries = {
+    "\ 'default' : '',
+    "\ 'vimshell' : $HOME.'/.vimshell_hist',
+    "\ 'scheme' : $HOME.'/.gosh_completions'
+    "\ }
 
-" Plugin key-mappings.
-inoremap <expr><C-g>     neocomplete#undo_completion()
-inoremap <expr><C-l>     neocomplete#complete_common_string()
+"" Define keyword.
+"if !exists('g:neocomplete#keyword_patterns')
+    "let g:neocomplete#keyword_patterns = {}
+"endif
+"let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return neocomplete#close_popup() . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-endfunction
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplete#close_popup()
-inoremap <expr><C-e>  neocomplete#cancel_popup()
-" Close popup by <Space>.
-"inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
+"" Plugin key-mappings.
+"inoremap <expr><C-g>     neocomplete#undo_completion()
+"inoremap <expr><C-l>     neocomplete#complete_common_string()
 
-" For cursor moving in insert mode(Not recommended)
-"inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-"inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-"inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-"inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
-" Or set this.
-"let g:neocomplete#enable_cursor_hold_i = 1
-" Or set this.
-"let g:neocomplete#enable_insert_char_pre = 1
+"" Recommended key-mappings.
+"" <CR>: close popup and save indent.
+"inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+"function! s:my_cr_function()
+  "return neocomplete#close_popup() . "\<CR>"
+  "" For no inserting <CR> key.
+  ""return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+"endfunction
+"" <TAB>: completion.
+"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+"" <C-h>, <BS>: close popup and delete backword char.
+"inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+"inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+"inoremap <expr><C-y>  neocomplete#close_popup()
+"inoremap <expr><C-e>  neocomplete#cancel_popup()
+"" Close popup by <Space>.
+""inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
 
-" AutoComplPop like behavior.
-"let g:neocomplete#enable_auto_select = 1
+"" For cursor moving in insert mode(Not recommended)
+""inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
+""inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
+""inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
+""inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
+"" Or set this.
+""let g:neocomplete#enable_cursor_hold_i = 1
+"" Or set this.
+""let g:neocomplete#enable_insert_char_pre = 1
 
-" Shell like behavior(not recommended).
-"set completeopt+=longest
-"let g:neocomplete#enable_auto_select = 1
-"let g:neocomplete#disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+"" AutoComplPop like behavior.
+""let g:neocomplete#enable_auto_select = 1
 
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"" Shell like behavior(not recommended).
+""set completeopt+=longest
+""let g:neocomplete#enable_auto_select = 1
+""let g:neocomplete#disable_auto_complete = 1
+""inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
-" Enable heavy omni completion.
-if !exists('g:neocomplete#sources#omni#input_patterns')
-  let g:neocomplete#sources#omni#input_patterns = {}
-endif
-"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+"" Enable omni completion.
+"autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+"autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+"autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
-" For perlomni.vim setting.
-" https://github.com/c9s/perlomni.vim
-let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+"" Enable heavy omni completion.
+"if !exists('g:neocomplete#sources#omni#input_patterns')
+  "let g:neocomplete#sources#omni#input_patterns = {}
+"endif
+""let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+""let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+""let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-let g:cpp_class_scope_highlight = 1
-let g:cpp_experimental_template_highlight = 1
+"" For perlomni.vim setting.
+"" https://github.com/c9s/perlomni.vim
+"let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+"let g:cpp_class_scope_highlight = 1
+"let g:cpp_experimental_template_highlight = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => others 
@@ -174,16 +201,6 @@ filetype plugin indent on
 "set guifont=11DejaVu_Sans_Mono:h10:cANSI
 
 set helplang=cn
-
-if has('win32')
-    au GUIEnter * simalt ~x
-else
-    au GUIEnter * call MaximizeWindow()
-endif
- 
-function! MaximizeWindow()
-    silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
-endfunction
 
 nnoremap <silent> <F12> :A<CR>
 " 自动关闭补全窗口 
@@ -359,7 +376,6 @@ if has("gui_running")
     set guioptions-=l
     set guioptions-=L
     set guioptions+=e
-    set t_Co=256
     set guitablabel=%M\ %t
 endif
 
@@ -372,6 +388,7 @@ set fileencoding=utf-8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
+set t_Co=256
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -475,10 +492,7 @@ catch
 endtry
 
 " Return to last edit position when opening files (You want this!)
-autocmd BufReadPost *
-     \ if line("'\"") > 0 && line("'\"") <= line("$") |
-     \   exe "normal! g`\"" |
-     \ endif
+autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") |   exe "normal! g`\"" | endif
 " Remember info about open buffers on close
 set viminfo^=%
 
