@@ -2,16 +2,12 @@
 " => OS Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has('win32') && has('gui_win32') && has('gui_running')
-   let s:RUNTIME_DIR=$VIM
+   let s:RUNTIME_DIR=s:RUNTIME_DIR
    au GUIEnter * simalt ~x
 else
-   let s:RUNTIME_DIR=~/.vim
+   let s:RUNTIME_DIR='~/.vim'
    au GUIEnter * call MaximizeWindow()
 endif
- 
-function! MaximizeWindow()
-    silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
-endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -19,9 +15,9 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 filetype off
-exec "set rtp+=".s:RUNTIME_DIR.'\bundle\vundle'
+exec 'set rtp+='.s:RUNTIME_DIR.'/bundle/vundle'
 call vundle#rc()
-call vundle#begin(s:RUNTIME_DIR.'\bundle\')
+call vundle#begin(s:RUNTIME_DIR.'/bundle/')
 Bundle 'gmarik/vundle'
 Bundle 'mru.vim'
 Bundle 'ctags.vim'
@@ -72,7 +68,7 @@ nn <silent><F7> :NERDTreeToggle<cr>
 autocmd VimEnter * NERDTree
 let NERDChristmasTree=1
 let NERDTreeAutoCenter=1
-let NERDTreeBookmarksFile=$VIM.'/Data/NerdBookmarks.txt'
+let NERDTreeBookmarksFile=s:RUNTIME_DIR.'/bundle/The-NERD-Tree/NerdBookmarks.txt'
 let NERDTreeMouseMode=2
 let NERDTreeShowBookmarks=1
 let NERDTreeShowFiles=1
@@ -99,7 +95,7 @@ let g:tagbar_width = 30
 autocmd VimEnter * nested :call tagbar#autoopen(1)  
 
 " YouCompleteMe 
-let g:ycm_global_ycm_extra_conf = $VIM.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = s:RUNTIME_DIR.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
 let g:ycm_complete_in_comments=1
 let g:ycm_confirm_extra_conf=0
 let g:ycm_collect_identifiers_from_tags_files=1
@@ -198,7 +194,6 @@ nmap <M-g> :YcmCompleter GoToDefinitionElseDeclaration <C-R>=expand("<cword>")<C
 " => others 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 filetype plugin indent on
-"set guifont=11DejaVu_Sans_Mono:h10:cANSI
 
 set helplang=cn
 
@@ -218,8 +213,8 @@ set clipboard+=unnamed
 "nnoremap <silent> <F11> :make<CR>:botright cope<cr>
 
 
-nmap ,s :source $VIM/_vimrc<CR><ESC><ESC>  
-nmap ,v e $VIM/_vimrc<CR>
+nmap ,s :source s:RUNTIME_DIR/_vimrc<CR><ESC><ESC>  
+nmap ,v e s:RUNTIME_DIR/_vimrc<CR>
 set shortmess=atI
 
 
@@ -390,6 +385,21 @@ set fileencoding=utf-8
 set ffs=unix,dos,mac
 set t_Co=256
 
+if has("gui_running")
+  if has("gui_gtk2")
+    set guifont=Ubuntu\ Mono\ 11
+  elseif has("gui_photon")
+    set guifont=Courier\ New:s11
+  elseif has("gui_kde")
+    set guifont=Courier\ New/11/-1/5/50/0/0/0/1/0
+  elseif has("x11")
+    set guifont=-*-courier-medium-r-normal-*-*-180-*-*-m-*-*
+  else
+    set guifont=Courier_New:h11:cDEFAULT
+  endif
+endif
+
+map <silent> <F11>  :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
@@ -659,4 +669,8 @@ function! <SID>BufcloseCloseIt()
    if buflisted(l:currentBufNum)
      execute("bdelete! ".l:currentBufNum)
    endif
+endfunction
+ 
+function! MaximizeWindow()
+    silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
 endfunction
