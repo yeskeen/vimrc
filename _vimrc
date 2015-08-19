@@ -124,7 +124,7 @@ let NERDTreeDirArrows=1
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 let g:airline_inactive_collapse=0
-"let g:airline_theme='hybridline'
+let g:airline_theme='papercolor'
 "let g:airline_powerline_fonts=1
 
 " syntastics
@@ -188,8 +188,6 @@ set history=700
 filetype plugin on
 filetype indent on
 
-" Set to auto read when a file is changed from the outside
-set autoread
 
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
@@ -203,60 +201,27 @@ nmap <leader>w :w!<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn on line numbers
-set nu
-
-" Set 7 lines to the cursor - when moving vertically using j/k
-set so=7
-
-" Turn on the WiLd menu
-set wildmenu
-
-" Ignore compiled files
-set wildignore=*.o,*~,*.pyc
-
-"Always show current position
-set ruler
-
+set nu                         " Turn on line numbers
+set so=7                       " Set 7 lines to the cursor - when moving vertically using j/k
+set wildmenu                   " Turn on the WiLd menu
+set wildignore=*.o,*~,*.pyc    " Ignore compiled files
+set ruler                      " Always show current position
 set showcmd
-
-" Height of the command bar
-set cmdheight=2
-
-" A buffer becomes hidden when it is abandoned
-set hid
-
-" Configure backspace so it acts as it should act
-set backspace=eol,start,indent
+set cmdheight=2                " Height of the command bar
+set hid                        " A buffer becomes hidden when it is abandoned
+set backspace=eol,start,indent " Configure backspace so it acts as it should act
 set whichwrap+=<,>,h,l
-
-" Ignore case when searching
-set ignorecase
-
-" When searching try to be smart about cases
-set smartcase
-
-" Highlight search results
-set hlsearch
-
-" Makes search act like search in modern browsers
-set incsearch
-
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-
-" For regular expressions turn magic on
-set magic
-
-" Show matching brackets when text indicator is over them
-set showmatch
-
-" How many tenths of a second to blink when matching brackets
-set mat=2
-
-" No annoying sound on errors
-set noerrorbells
+set ignorecase                 " Ignore case when searching
+set smartcase                  " When searching try to be smart about cases
+set hlsearch                   " Highlight search results
+set incsearch                  " Makes search act like search in modern browsers
+set lazyredraw                 " Don't redraw while executing macros (good performance config)
+set magic                      " For regular expressions turn magic on
+set showmatch                  " Show matching brackets when text indicator is over them
+set mat=2                      " How many tenths of a second to blink when matching brackets
+set noerrorbells               " No annoying sound on errors
 set novisualbell
+set autoread                   " Set to auto read when a file is changed from the outside
 set t_vb=
 set tm=500
 
@@ -322,23 +287,15 @@ set noswapfile
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use spaces instead of tabs
-set expandtab
-
-" Be smart when using tabs ;)
-set smarttab
-
-" 1 tab == 4 spaces
-set shiftwidth=4
+set expandtab    " Use spaces instead of tabs
+set smarttab     " Be smart when using tabs ;)
+set shiftwidth=4 " 1 tab == 4 spaces
 set tabstop=4
-
-" Linebreak on 500 characters
-set lbr
+set lbr          " Linebreak on 500 characters
 set tw=500
-
-set ai "Auto indent
-set si "Smart indent
-set wrap "Wrap lines
+set ai           " Auto indent
+set si           " Smart indent
+set wrap         " Wrap lines
 
 
 """"""""""""""""""""""""""""""
