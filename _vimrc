@@ -1,6 +1,6 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: 
-"    Keen 
+" Maintainer:
+"    Keen
 "    https://github.com/yeskeen/vimrc
 "
 " Sections:
@@ -26,8 +26,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => OS Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has('win32') && has('gui_win32') && has('gui_running')
-   let s:RUNTIME_DIR=s:RUNTIME_DIR
+if has('win16') || has('win32') || has('win64')
+   let s:RUNTIME_DIR=$VIM
    au GUIEnter * simalt ~x
 else
    let s:RUNTIME_DIR='~/.vim'
@@ -48,42 +48,59 @@ Bundle 'mru.vim'
 Bundle 'ctags.vim'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
-Bundle 'The-Nerd-Tree'
-Bundle 'The-Nerd-Commenter'
+Bundle 'the-nerd-tree'
+Bundle 'the-nerd-commenter'
 Bundle 'tagbar'
 Bundle 'a.vim'
 Bundle 'c.vim'
 Bundle 'xml.vim'
 Bundle 'css.vim'
-Bundle 'python.vim'
 Bundle 'javascript.vim'
 Bundle 'fencview.vim'
 Bundle 'AutoClose'
+Bundle 'sessionman.vim'
 Bundle 'MatchIt.zip'
 Bundle 'STL-Syntax'
 Bundle 'TagHighlight'
-Bundle 'tpope/vim-fugitive'
-"Bundle 'Shougo/neocomplete.vim'
+Bundle 'mileszs/ack.vim'
 Bundle 'Lokaltog/vim-easymotion'
-Bundle 'Lokaltog/vim-powerline'
+Bundle 'bling/vim-airline'
 Bundle 'octol/vim-cpp-enhanced-highlight'
 Bundle 'hdima/python-syntax'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'kien/ctrlp.vim'
-"Bundle 'msanders/snipmate.vim'
+Bundle 'tacahiroy/ctrlp-funky'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-fugitive'
 Bundle 'scrooloose/syntastic'
 Bundle 'sirver/ultisnips'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'Valloric/YouCompleteMe'
+Bundle 'godlygeek/tabular'
 Bundle 'qiyu2580/vimcdoc'
+"Bundle 'Shougo/neocomplete.vim'
+"Bundle 'Lokaltog/vim-powerline'
+"Bundle 'jistr/vim-nerdtree-tabs'
 call vundle#end()
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugin settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" solarized theme
+let g:solarized_italic    =0
+let g:solarized_termcolors=256
+let g:solarized_termtrans =1
+let g:solarized_degrade   =0
+let g:solarized_bold      =0
+let g:solarized_underline =1
+colorscheme solarized
+set background=dark
+
+" a.vim
+nnoremap <silent> <F12> :A<CR>
+
 " c.vim
 let g:C_GlobalTemplateFile= s:RUNTIME_DIR.'/bundle/c.vim/c-support/templates/Templates'
 
@@ -93,16 +110,22 @@ nn <silent><F7> :NERDTreeToggle<cr>
 autocmd VimEnter * NERDTree
 let NERDChristmasTree=1
 let NERDTreeAutoCenter=1
-let neRDTreeBookmarksFile=s:RUNTIME_DIR.'/bundle/The-NERD-Tree/NerdBookmarks.txt'
-let neRDTreeMouseMode=2
-let neRDTreeShowBookmarks=1
-let neRDTreeShowFiles=1
-let neRDTreeShowHidden=1
-let neRDTreeShowLineNumbers=0
-let neRDTreeWinSize=31
-let neRDTreeTitle='[NERD Tree]'
-let neRDTreeMinimalUI=1
+let NERDTreeBookmarksFile=s:RUNTIME_DIR.'/bundle/The-NERD-Tree/NerdBookmarks.txt'
+let NERDTreeMouseMode=2
+let NERDTreeShowBookmarks=1
+let NERDTreeShowFiles=1
+let NERDTreeShowHidden=1
+let NERDTreeShowLineNumbers=0
+let NERDTreeWinSize=31
+let NERDTreeMinimalUI=1
 let NERDTreeDirArrows=1
+
+" airline
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+let g:airline_inactive_collapse=0
+"let g:airline_theme='hybridline'
+"let g:airline_powerline_fonts=1
 
 " syntastics
 nn <silent><F2> :UpdateTypesFile<CR>
@@ -113,13 +136,18 @@ let g:Powerline_mode_cv = 'VISUAL BLOCK'
 let g:Powerline_mode_S = 'SELECT LINE'
 let g:Powerline_mode_cs = 'SELECT BLOCK'
 
+" Sessionman
+set viminfo='100,<500,s10,h,!
+autocmd VimEnter * SessionOpenLast
+let sessionman_save_on_exit = 1
+
 " TagBar
-nnoremap <silent> <F8> :TagbarToggle<CR> 
+nnoremap <silent> <F8> :TagbarToggle<CR>
 let g:tagbar_right = 1
 let g:tagbar_width = 30
-autocmd VimEnter * nested :call tagbar#autoopen(1)  
+autocmd VimEnter * nested :call tagbar#autoopen(1)
 
-" YouCompleteMe 
+" YouCompleteMe
 let g:ycm_global_ycm_extra_conf = s:RUNTIME_DIR.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
 let g:ycm_complete_in_comments=1
 let g:ycm_confirm_extra_conf=0
@@ -133,31 +161,19 @@ let g:ycm_seed_identifiers_with_syntax=1
 let g:ycm_key_invoke_completion = '<M-;>'
 nmap <M-g> :YcmCompleter GoToDefinitionElseDeclaration <C-R>=expand("<cword>")<CR><CR>
 
-"let g:cpp_experimental_template_highlight = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => others 
+" => others
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-filetype plugin indent on
-
 set helplang=cn
-
-nnoremap <silent> <F12> :A<CR>
-" 自动关闭补全窗口 
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif 
+au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 set completeopt=menuone,menu,longest
-highlight Pmenu    guibg=darkgrey  guifg=black 
+highlight Pmenu    guibg=darkgrey  guifg=black
 highlight PmenuSel guibg=lightgrey guifg=black
 set clipboard+=unnamed
-"nmap <F2> :nohlsearch<CR>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => pclint 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"comp! flint
-"nnoremap <silent> <F11> :make<CR>:botright cope<cr>
-
-nmap ,s :source s:RUNTIME_DIR/_vimrc<CR><ESC><ESC>  
+" edit and load vimrc
+nmap ,s :source s:RUNTIME_DIR/.'_vimrc'<CR><ESC><ESC>
 nmap ,v e s:RUNTIME_DIR/_vimrc<CR>
 set shortmess=atI
 
@@ -188,7 +204,7 @@ nmap <leader>w :w!<cr>
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Turn on line numbers
-set nu 
+set nu
 
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
@@ -202,8 +218,10 @@ set wildignore=*.o,*~,*.pyc
 "Always show current position
 set ruler
 
+set showcmd
+
 " Height of the command bar
-set cmdheight=2 
+set cmdheight=2
 
 " A buffer becomes hidden when it is abandoned
 set hid
@@ -215,7 +233,7 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching
 set ignorecase
 
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
@@ -248,20 +266,12 @@ set tm=500
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
 syntax enable
-colorscheme solarized
-set background=dark
-let g:solarized_termcolors=256
-let g:solarized_termtrans =1
-let g:solarized_degrade   =0
-let g:solarized_bold      =0
-let g:solarized_underline =1
-let g:solarized_italic    =0
 
 hi LineNr guifg=grey60
 set cursorline
 
-hi Statement ctermfg=3 guifg=khaki term=NONE gui=NONE 
-hi Type term=underline ctermfg=2 gui=NONE guifg=darkkhaki 
+hi Statement ctermfg=3 guifg=khaki term=NONE gui=NONE
+hi Type term=underline ctermfg=2 gui=NONE guifg=darkkhaki
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -295,8 +305,6 @@ if has("gui_running")
     set guifont=Courier\ New/11/-1/5/50/0/0/0/1/0
   elseif has("x11")
     set guifont=-*-courier-medium-r-normal-*-*-180-*-*-m-*-*
-  else
-    set guifont=Courier_New:h11:cDEFAULT
   endif
 endif
 
@@ -395,7 +403,7 @@ map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
   set stal=1
@@ -415,13 +423,13 @@ set viminfo^=%
 set laststatus=2
 
 " Format the status line
-"set statusline=\ \ %{HasPaste()}FILE:\ %f%m%r%h%w\ \ CWD:\ %r%{getcwd()}%h\ \ Line:\ %l/%L\ \ Column:\ %c\ \   
+"set statusline=\ \ %{HasPaste()}FILE:\ %f%m%r%h%w\ \ CWD:\ %r%{getcwd()}%h\ \ Line:\ %l/%L\ \ Column:\ %c\ \
 set statusline=
 set statusline+=%<%{HasPaste()}%F%m%r%h%w
 set statusline+=%=
 set statusline+=\|%-4{&ff}
-set statusline+=\|%-4(%p%%%) 
-set statusline+=\|%-23(row:%l/%L,col:%c%) 
+set statusline+=\|%-4(%p%%%)
+set statusline+=\|%-23(row:%l/%L,col:%c%)
 
 set titlestring=VIM\ -\ [%r%{getcwd()}%h]
 
@@ -461,11 +469,11 @@ map <leader>e :edit %:p:h<cr>
 " When you press gv you vimgrep after the selected text
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
-" Open vimgrep and put the cursor in the right position
-map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+" Vimgreps in the current directory
+map <leader>g :vimgrep // **<left><left><left><left>
 
 " Vimgreps in the current file
-map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
+map <leader><space> :vimgrep // %<left><left><left>
 
 " When you press <leader>r you can search and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
@@ -571,7 +579,8 @@ function! <SID>BufcloseCloseIt()
      execute("bdelete! ".l:currentBufNum)
    endif
 endfunction
- 
+
 function! MaximizeWindow()
     silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
 endfunction
+
