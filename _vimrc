@@ -64,7 +64,7 @@ Bundle 'STL-Syntax'
 Bundle 'TagHighlight'
 Bundle 'mileszs/ack.vim'
 Bundle 'Lokaltog/vim-easymotion'
-Bundle 'bling/vim-airline'
+Bundle 'yeskeen/vim-airline'
 Bundle 'octol/vim-cpp-enhanced-highlight'
 Bundle 'hdima/python-syntax'
 Bundle 'terryma/vim-multiple-cursors'
@@ -75,13 +75,12 @@ Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-fugitive'
 Bundle 'scrooloose/syntastic'
 Bundle 'sirver/ultisnips'
+Bundle 'honza/vim-snippets'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'godlygeek/tabular'
 Bundle 'qiyu2580/vimcdoc'
 "Bundle 'Shougo/neocomplete.vim'
-"Bundle 'Lokaltog/vim-powerline'
-"Bundle 'jistr/vim-nerdtree-tabs'
 call vundle#end()
 
 
@@ -102,75 +101,73 @@ set background=dark
 nnoremap <silent> <F12> :A<CR>
 
 " c.vim
-let g:C_GlobalTemplateFile= s:RUNTIME_DIR.'/bundle/c.vim/c-support/templates/Templates'
+let g:C_GlobalTemplateFile=s:RUNTIME_DIR.'/bundle/c.vim/c-support/templates/Templates'
 
 " NERDTree
 nn <silent><F6> :exec("NERDTree ".expand('%:h'))<CR>
 nn <silent><F7> :NERDTreeToggle<cr>
 autocmd VimEnter * NERDTree
-let NERDChristmasTree=1
-let NERDTreeAutoCenter=1
-let NERDTreeBookmarksFile=s:RUNTIME_DIR.'/bundle/The-NERD-Tree/NerdBookmarks.txt'
-let NERDTreeMouseMode=2
-let NERDTreeShowBookmarks=1
-let NERDTreeShowFiles=1
-let NERDTreeShowHidden=1
-let NERDTreeShowLineNumbers=0
-let NERDTreeWinSize=31
-let NERDTreeMinimalUI=1
-let NERDTreeDirArrows=1
+let NERDChristmasTree       =1
+let NERDTreeAutoCenter      =1
+let NERDTreeBookmarksFile   =s:RUNTIME_DIR.'/bundle/The-NERD-Tree/NerdBookmarks.txt'
+let NERDTreeMouseMode       =2
+let NERDTreeShowBookmarks   =1
+let NERDTreeShowFiles       =1
+let NERDTreeShowHidden      =1
+let NERDTreeShowLineNumbers =0
+let NERDTreeWinSize         =30
+let NERDTreeMinimalUI       =1
+let NERDTreeDirArrows       =1;
 
 " airline
-let g:airline_left_sep=''
-let g:airline_right_sep=''
-let g:airline_inactive_collapse=0
-let g:airline_theme='papercolor'
-"let g:airline_powerline_fonts=1
+let g:airline_left_sep          =''
+let g:airline_right_sep         =''
+let g:airline_inactive_collapse =0
+let g:airline_theme             ='cool'
+"let g:airline_powerline_fonts  =1
 
 " syntastics
 nn <silent><F2> :UpdateTypesFile<CR>
 
-" PowerLine
-let g:Powerline_mode_V = 'VISUAL LINE'
-let g:Powerline_mode_cv = 'VISUAL BLOCK'
-let g:Powerline_mode_S = 'SELECT LINE'
-let g:Powerline_mode_cs = 'SELECT BLOCK'
-
 " Sessionman
 set viminfo='100,<500,s10,h,!
 autocmd VimEnter * SessionOpenLast
-let sessionman_save_on_exit = 1
+let sessionman_save_on_exit =1
 
-" TagBar
+" Tagbar
 nnoremap <silent> <F8> :TagbarToggle<CR>
-let g:tagbar_right = 1
-let g:tagbar_width = 30
+let g:tagbar_right =1
+let g:tagbar_width =30
 autocmd VimEnter * nested :call tagbar#autoopen(1)
 
+" UltiSnips
+let g:UltiSnipsUsePythonVersion=2
+let g:UltiSnipsExpandTrigger='<CR>'
+
 " YouCompleteMe
-let g:ycm_global_ycm_extra_conf = s:RUNTIME_DIR.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
-let g:ycm_complete_in_comments=1
-let g:ycm_confirm_extra_conf=0
-let g:ycm_collect_identifiers_from_tags_files=1
+let g:ycm_global_ycm_extra_conf               =s:RUNTIME_DIR.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
+let g:ycm_complete_in_comments                =1
+let g:ycm_confirm_extra_conf                  =0
+let g:ycm_collect_identifiers_from_tags_files =1
+let g:ycm_min_num_of_chars_for_completion     =1
+let g:ycm_cache_omnifunc                      =0
+let g:ycm_seed_identifiers_with_syntax        =1
+let g:ycm_key_invoke_completion               ='<M-;>'
 set tags+=/data/misc/software/misc./vim/stdcpp.tags
 inoremap <leader>; <C-x><C-o>
 set completeopt-=preview
-let g:ycm_min_num_of_chars_for_completion=1
-let g:ycm_cache_omnifunc=0
-let g:ycm_seed_identifiers_with_syntax=1
-let g:ycm_key_invoke_completion = '<M-;>'
 nmap <M-g> :YcmCompleter GoToDefinitionElseDeclaration <C-R>=expand("<cword>")<CR><CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => others
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set helplang=cn
+set helplang    =cn
+set completeopt =menuone,menu,longest
+set clipboard+=unnamed
 au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-set completeopt=menuone,menu,longest
 highlight Pmenu    guibg=darkgrey  guifg=black
 highlight PmenuSel guibg=lightgrey guifg=black
-set clipboard+=unnamed
 
 " edit and load vimrc
 nmap ,s :source s:RUNTIME_DIR/.'_vimrc'<CR><ESC><ESC>
@@ -188,11 +185,10 @@ set history=700
 filetype plugin on
 filetype indent on
 
-
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
-let mapleader = ","
-let g:mapleader = ","
+let mapleader   =","
+let g:mapleader =","
 
 " Fast saving
 nmap <leader>w :w!<cr>
@@ -251,15 +247,15 @@ if has("gui_running")
 endif
 
 " Set utf8 as standard encoding and en_US as the standard language
-set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
-set termencoding=utf-8
-set encoding=utf-8
-set fileencodings=ucs-bom,utf-8,cp936
-set fileencoding=utf-8
+set fencs         =utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
+set termencoding  =utf-8
+set encoding      =utf-8
+set fileencodings =ucs-bom,utf-8,cp936
+set fileencoding  =utf-8
 
 " Use Unix as the standard file type
-set ffs=unix,dos,mac
-set t_Co=256
+set ffs  =unix,dos,mac
+set t_Co =256
 
 if has("gui_running")
   if has("gui_gtk2")
