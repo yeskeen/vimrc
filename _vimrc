@@ -27,10 +27,10 @@
 " => OS Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has('win16') || has('win32') || has('win64')
-   let s:RUNTIME_DIR=$VIM
+   let s:RUNTIME=$VIM
    au GUIEnter * simalt ~x
 else
-   let s:RUNTIME_DIR='~/.vim'
+   let s:RUNTIME='~/.vim'
    au GUIEnter * call MaximizeWindow()
 endif
 
@@ -40,9 +40,9 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 filetype off
-exec 'set rtp+='.s:RUNTIME_DIR.'/bundle/vundle'
+exec 'set rtp+='.s:RUNTIME.'/bundle/vundle'
 call vundle#rc()
-call vundle#begin(s:RUNTIME_DIR.'/bundle/')
+call vundle#begin(s:RUNTIME.'/bundle/')
 Bundle 'gmarik/vundle'
 Bundle 'mru.vim'
 Bundle 'ctags.vim'
@@ -62,7 +62,7 @@ Bundle 'sessionman.vim'
 Bundle 'MatchIt.zip'
 Bundle 'STL-Syntax'
 Bundle 'TagHighlight'
-Bundle 'mileszs/ack.vim'
+Bundle 'rking/ag.vim'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'yeskeen/vim-airline'
 Bundle 'octol/vim-cpp-enhanced-highlight'
@@ -81,6 +81,7 @@ Bundle 'Valloric/YouCompleteMe'
 Bundle 'godlygeek/tabular'
 Bundle 'qiyu2580/vimcdoc'
 "Bundle 'Shougo/neocomplete.vim'
+"Bundle 'vimgrep.vim'
 call vundle#end()
 
 
@@ -91,43 +92,46 @@ call vundle#end()
 let g:solarized_italic    =0
 let g:solarized_termcolors=256
 let g:solarized_termtrans =1
-let g:solarized_degrade   =0
 let g:solarized_bold      =0
-let g:solarized_underline =1
 colorscheme solarized
 set background=dark
 
 " a.vim
-nnoremap <silent> <F12> :A<CR>
+nnoremap <silent> <F12> :A<CR> "swtich between source files and header files quickly
 
 " c.vim
-let g:C_GlobalTemplateFile=s:RUNTIME_DIR.'/bundle/c.vim/c-support/templates/Templates'
+let g:C_GlobalTemplateFile=s:RUNTIME.'/bundle/c.vim/c-support/templates/Templates'
+
+" FuzzyFinder
+map <leader>fb :FufBuffer<cr>
+map <leader>fc :FufChangeList<cr>
+map <leader>fd :FufDir<cr>
+map <leader>ff :FufFile<cr>
+map <leader>fh :FufHelp<cr>
+map <leader>fj :FufJumpList<cr>
+map <leader>fl :FufLine<cr>
+map <leader>ft :FufTag<cr>
+map <leader>fq :FufQuickfix<cr>
 
 " NERDTree
-nn <silent><F6> :exec("NERDTree ".expand('%:h'))<CR>
-nn <silent><F7> :NERDTreeToggle<cr>
+nnoremap <silent><F6> :exec("NERDTree ".expand('%:h'))<CR>
+nnoremap <silent><F7> :NERDTreeToggle<cr>
 autocmd VimEnter * NERDTree
-let NERDChristmasTree       =1
-let NERDTreeAutoCenter      =1
-let NERDTreeBookmarksFile   =s:RUNTIME_DIR.'/bundle/The-NERD-Tree/NerdBookmarks.txt'
+let NERDTreeBookmarksFile   =s:RUNTIME.'/bundle/The-NERD-Tree/NerdBookmarks.txt'
 let NERDTreeMouseMode       =2
 let NERDTreeShowBookmarks   =1
-let NERDTreeShowFiles       =1
 let NERDTreeShowHidden      =1
-let NERDTreeShowLineNumbers =0
-let NERDTreeWinSize         =30
 let NERDTreeMinimalUI       =1
-let NERDTreeDirArrows       =1;
+let NERDTreeDirArrows       =1
 
 " airline
 let g:airline_left_sep          =''
 let g:airline_right_sep         =''
 let g:airline_inactive_collapse =0
 let g:airline_theme             ='cool'
-"let g:airline_powerline_fonts  =1
 
 " syntastics
-nn <silent><F2> :UpdateTypesFile<CR>
+nnoremap <silent><F2> :UpdateTypesFile<CR>
 
 " Sessionman
 set viminfo='100,<500,s10,h,!
@@ -136,16 +140,15 @@ let sessionman_save_on_exit =1
 
 " Tagbar
 nnoremap <silent> <F8> :TagbarToggle<CR>
-let g:tagbar_right =1
 let g:tagbar_width =30
 autocmd VimEnter * nested :call tagbar#autoopen(1)
 
 " UltiSnips
-let g:UltiSnipsUsePythonVersion=2
-let g:UltiSnipsExpandTrigger='<CR>'
+let g:UltiSnipsUsePythonVersion =2
+let g:UltiSnipsExpandTrigger    ='<C-l>'
 
 " YouCompleteMe
-let g:ycm_global_ycm_extra_conf               =s:RUNTIME_DIR.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf               =s:RUNTIME.'/bundle/YouCompleteMe/.ycm_extra_conf.py'
 let g:ycm_complete_in_comments                =1
 let g:ycm_confirm_extra_conf                  =0
 let g:ycm_collect_identifiers_from_tags_files =1
@@ -153,26 +156,25 @@ let g:ycm_min_num_of_chars_for_completion     =1
 let g:ycm_cache_omnifunc                      =0
 let g:ycm_seed_identifiers_with_syntax        =1
 let g:ycm_key_invoke_completion               ='<M-;>'
-set tags+=/data/misc/software/misc./vim/stdcpp.tags
 inoremap <leader>; <C-x><C-o>
-set completeopt-=preview
+set completeopt =menuone,menu,longest
 nmap <M-g> :YcmCompleter GoToDefinitionElseDeclaration <C-R>=expand("<cword>")<CR><CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => others
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set langmenu    =en_US
+let $LANG       ='en_US'
 set helplang    =cn
-set completeopt =menuone,menu,longest
-set clipboard+=unnamed
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-highlight Pmenu    guibg=darkgrey  guifg=black
-highlight PmenuSel guibg=lightgrey guifg=black
+set clipboard  +=unnamed
+autocmd CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 
 " edit and load vimrc
-nmap ,s :source s:RUNTIME_DIR/.'_vimrc'<CR><ESC><ESC>
-nmap ,v e s:RUNTIME_DIR/_vimrc<CR>
-set shortmess=atI
+let g:VIMRCCC =s:RUNTIME.'/_vimrc'
+nmap ,s :exec(':source '.g:VIMRCCC)<CR>
+nmap ,v :exec(':e '.g:VIMRCCC)<CR>
+set shortmess=atI "dont show startup message
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -192,19 +194,19 @@ let g:mapleader =","
 
 " Fast saving
 nmap <leader>w :w!<cr>
-
+vnoremap <leader>s y:%s/<C-R>=escape(@", '\\/.*$^~[]')<CR>/
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set nu                         " Turn on line numbers
-set so=7                       " Set 7 lines to the cursor - when moving vertically using j/k
-set wildmenu                   " Turn on the WiLd menu
+set number                     " Turn on line numbers
+set scrolloff=7                " Set 7 lines to the cursor - when moving vertically using j/k
+set wildmenu                   " Turn on the Wild menu
 set wildignore=*.o,*~,*.pyc    " Ignore compiled files
 set ruler                      " Always show current position
-set showcmd
+set showcmd                    " Show command on the right bottom
 set cmdheight=2                " Height of the command bar
-set hid                        " A buffer becomes hidden when it is abandoned
+set hidden                     " A buffer becomes hidden when it is abandoned
 set backspace=eol,start,indent " Configure backspace so it acts as it should act
 set whichwrap+=<,>,h,l
 set ignorecase                 " Ignore case when searching
@@ -228,7 +230,6 @@ set tm=500
 " Enable syntax highlighting
 syntax enable
 
-hi LineNr guifg=grey60
 set cursorline
 
 hi Statement ctermfg=3 guifg=khaki term=NONE gui=NONE
@@ -310,9 +311,8 @@ vnoremap <silent> # :call VisualSelection('b')<CR>
 map j gj
 map k gk
 
-" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
+" Map <Space> to / (search)
 map <space> /
-map <c-space> ?
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
@@ -323,24 +323,9 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
-" FuzzyFinder
-map <leader>fb :FufBuffer<cr>
-map <leader>fc :FufChangeList<cr>
-map <leader>fd :FufDir<cr>
-map <leader>ff :FufFile<cr>
-map <leader>fh :FufHelp<cr>
-map <leader>fj :FufJumpList<cr>
-map <leader>fl :FufLine<cr>
-map <leader>ft :FufTag<cr>
-map <leader>fq :FufQuickfix<cr>
-
-" Close the current buffer
+" buffer operation
 map <leader>bd :Bclose<cr>
-
-" Close all the buffers
 map <leader>ba :1,1000 bd!<cr>
-
-" Show all the buffers
 map <leader>bs :ls<cr>
 
 " Useful mappings for managing tabs
@@ -348,10 +333,7 @@ map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
-
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/ " Opens a new tab with the current buffer's path
 
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -376,7 +358,6 @@ set viminfo^=%
 set laststatus=2
 
 " Format the status line
-"set statusline=\ \ %{HasPaste()}FILE:\ %f%m%r%h%w\ \ CWD:\ %r%{getcwd()}%h\ \ Line:\ %l/%L\ \ Column:\ %c\ \
 set statusline=
 set statusline+=%<%{HasPaste()}%F%m%r%h%w
 set statusline+=%=
@@ -431,21 +412,14 @@ map <leader><space> :vimgrep // %<left><left><left>
 " When you press <leader>r you can search and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
 
-" Do :help cope if you are unsure what cope is. It's super useful!
-"
-" When you search with vimgrep, display your results in cope by doing:
-"   <leader>cc
-"
-" To go to the next search result do:
-"   <leader>n
-"
-" To go to the previous search results do:
-"   <leader>p
-"
-"map <leader>cc :botright cope<cr>
-"map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-"map <leader>n :cn<cr>
-"map <leader>p :cp<cr>
+" When search with vimgrep, show quickfix window
+map <silent> <leader>co :botright cope<cr>
+
+" Go to the next search result
+map <silent> <leader>n :cn<cr>
+
+" Go to the previous search result
+map <silent> <leader>p :cp<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
