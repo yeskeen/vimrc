@@ -34,6 +34,10 @@ else
    au GUIEnter * call MaximizeWindow()
 endif
 
+" leader key
+let mapleader   =","
+let g:mapleader =","
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugins
@@ -56,7 +60,6 @@ Bundle 'c.vim'
 Bundle 'xml.vim'
 Bundle 'css.vim'
 Bundle 'javascript.vim'
-Bundle 'fencview.vim'
 Bundle 'AutoClose'
 Bundle 'sessionman.vim'
 Bundle 'MatchIt.zip'
@@ -80,6 +83,9 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'godlygeek/tabular'
 Bundle 'qiyu2580/vimcdoc'
+Bundle 'jaxbot/semantic-highlight.vim'
+Bundle 'plasticboy/vim-markdown'
+"Bundle 'jeaye/color_coded'
 "Bundle 'Shougo/neocomplete.vim'
 "Bundle 'vimgrep.vim'
 call vundle#end()
@@ -96,11 +102,14 @@ let g:solarized_bold      =0
 colorscheme solarized
 set background=dark
 
-" a.vim
-nnoremap <silent> <F12> :A<CR> "swtich between source files and header files quickly
+" a.vim   swtich between source files and header files quickly
+nnoremap <silent> <F12> :A<CR>
 
 " c.vim
 let g:C_GlobalTemplateFile=s:RUNTIME.'/bundle/c.vim/c-support/templates/Templates'
+
+" ctrlp
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20'
 
 " FuzzyFinder
 map <leader>fb :FufBuffer<cr>
@@ -131,12 +140,7 @@ let g:airline_inactive_collapse =0
 let g:airline_theme             ='cool'
 
 " syntastics
-nnoremap <silent><F2> :UpdateTypesFile<CR>
-
-" Sessionman
-set viminfo='100,<500,s10,h,!
-autocmd VimEnter * SessionOpenLast
-let sessionman_save_on_exit =1
+"nnoremap <silent><F2> :UpdateTypesFile<CR>
 
 " Tagbar
 nnoremap <silent> <F8> :TagbarToggle<CR>
@@ -158,7 +162,7 @@ let g:ycm_seed_identifiers_with_syntax        =1
 let g:ycm_key_invoke_completion               ='<M-;>'
 inoremap <leader>; <C-x><C-o>
 set completeopt =menuone,menu,longest
-nmap <M-g> :YcmCompleter GoToDefinitionElseDeclaration <C-R>=expand("<cword>")<CR><CR>
+nmap <C-g> :YcmCompleter GoToDefinitionElseDeclaration <C-R>=expand("<cword>")<CR><CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -168,12 +172,12 @@ set langmenu    =en_US
 let $LANG       ='en_US'
 set helplang    =cn
 set clipboard  +=unnamed
-autocmd CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
+""autocmd CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 
 " edit and load vimrc
 let g:VIMRCCC =s:RUNTIME.'/_vimrc'
-nmap ,s :exec(':source '.g:VIMRCCC)<CR>
-nmap ,v :exec(':e '.g:VIMRCCC)<CR>
+nmap <leader>s :exec(':source '.g:VIMRCCC)<CR>
+nmap <leader>v :exec(':e '.g:VIMRCCC)<CR>
 set shortmess=atI "dont show startup message
 
 
@@ -187,10 +191,6 @@ set history=700
 filetype plugin on
 filetype indent on
 
-" With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
-let mapleader   =","
-let g:mapleader =","
 
 " Fast saving
 nmap <leader>w :w!<cr>
@@ -234,6 +234,7 @@ set cursorline
 
 hi Statement ctermfg=3 guifg=khaki term=NONE gui=NONE
 hi Type term=underline ctermfg=2 gui=NONE guifg=darkkhaki
+hi Cursor guifg=black guibg=white
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -348,7 +349,7 @@ endtry
 " Return to last edit position when opening files (You want this!)
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") |   exe "normal! g`\"" | endif
 " Remember info about open buffers on close
-set viminfo^=%
+"set viminfo^=%
 
 
 """"""""""""""""""""""""""""""
@@ -510,4 +511,9 @@ endfunction
 function! MaximizeWindow()
     silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
 endfunction
+
+" Sessionman*
+"set viminfo='100,<500,s10,h,!
+"autocmd VimEnter * SessionOpenLast
+"let sessionman_save_on_exit =1
 
